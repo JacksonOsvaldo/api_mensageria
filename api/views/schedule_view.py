@@ -95,7 +95,7 @@ class CommunicationScheduleViewSet(viewsets.ViewSet):
             RabbitmqService().send_message(
                 exchange, rout_key_name, {"id": schedule.id}
             )
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(ScheduleDetailSerializer(schedule).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(

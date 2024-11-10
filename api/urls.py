@@ -22,7 +22,7 @@ schema_view = get_schema_view(
 )
 
 router = DefaultRouter()
-router.register(r"schedules", CommunicationScheduleViewSet)
+router.register(r"schedules", CommunicationScheduleViewSet, basename='communication-schedule')
 router.register(r'rabbitmq', RabbitMqViewSet, basename='rabbitmq')
 
 urlpatterns = [
