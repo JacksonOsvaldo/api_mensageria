@@ -4,7 +4,7 @@ services:
   django:
     build: .
     container_name: django_api_mensageria
-    command: /app/entrypoint.sh
+    command: ["dockerize", "-wait", "tcp://rabbitmq:5672", "-timeout", "30s", "/app/entrypoint.sh"]
     volumes:
       - .:/app
     ports:
@@ -14,12 +14,15 @@ services:
       - rabbitmq
     environment:
       - DEBUG=True
-      - ALLOWED_HOSTS=localhost
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
+      - RABBIT_MQ_HOST=rabbitmq
+      - RABBIT_MQ_PORT=5672
+      - RABBIT_MQ_USER=guest
+      - RABBIT_MQ_PASSWORD=guest
 
   db:
     image: postgres:13
@@ -42,8 +45,10 @@ services:
       - "15672:15672"
       - "5672:5672"
     environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBIT_MQ_HOST=rabbitmq
+      - RABBIT_MQ_PORT=5672
+      - RABBIT_MQ_USER=guest
+      - RABBIT_MQ_PASSWORD=guest
 
 volumes:
   postgres_data:
