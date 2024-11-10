@@ -1,0 +1,12 @@
+name: test_Django
+on: [pull_request, push]
+jobs:
+  test_project:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+      - run: pip install -r requirements.txt
+      - run: python manage.py makemigrations
+      - run: python manage.py migrate
+      - run: python manage.py test tests
