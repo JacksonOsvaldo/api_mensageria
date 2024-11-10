@@ -23,4 +23,4 @@ jobs:
       # Rodar os testes
       - name: Run tests
         run: |
-          docker exec -i -t django_api_mensageria python manage.py test tests
+          docker exec django_api_mensageria python manage.py test tests
