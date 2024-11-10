@@ -20,9 +20,8 @@ class RabbitmqService:
         self.__port = RABBIT_MQ_PORT
         self.__user = RABBIT_MQ_USER
         self.__password = RABBIT_MQ_PASSWORD
-        self.__channel = self.__create_channel()
 
-    def __create_channel(self):
+    def create_channel(self):
         """
         Creates a new channel for communication with RabbitMQ.
 
@@ -48,7 +47,9 @@ class RabbitmqService:
         :type exchange_name: str
         :raises pika.exceptions.AMQPChannelError: If the channel creation fails.
         """
-        self.__channel.exchange_declare(exchange=exchange_name, durable=True)
+        channel = self.create_channel()
+        channel.exchange_declare(exchange=exchange_name, durable=True)
+        channel.close()
 
     def create_queue(self, queue_name: str) -> None:
         """
@@ -58,7 +59,9 @@ class RabbitmqService:
         :type queue_name: str
         :raises pika.exceptions.AMQPChannelError: If the queue creation fails.
         """
-        self.__channel.queue_declare(queue=queue_name, durable=True)
+        channel = self.create_channel()
+        channel.queue_declare(queue=queue_name, durable=True)
+        channel.close()
 
     def queue_bind(
         self, exchange_name: str, queue_name: str, rout_key_name: str
@@ -74,9 +77,11 @@ class RabbitmqService:
         :type rout_key_name: str
         :raises pika.exceptions.AMQPChannelError: If the binding fails.
         """
-        self.__channel.queue_bind(
+        channel = self.create_channel()
+        channel.queue_bind(
             exchange=exchange_name, queue=queue_name, routing_key=rout_key_name
         )
+        channel.close()
 
     def send_message(self, exchange_name: str, rout_key_name: str, body: Dict) -> None:
         """
@@ -90,12 +95,14 @@ class RabbitmqService:
         :type body: Dict
         :raises pika.exceptions.AMQPChannelError: If sending the message fails.
         """
-        self.__channel.basic_publish(
+        channel = self.create_channel()
+        channel.basic_publish(
             exchange=exchange_name,
             routing_key=rout_key_name,
             body=json.dumps(body),
             properties=pika.BasicProperties(delivery_mode=2),
         )
+        channel.close()
 
     def list_exchanges(self) -> list:
         """

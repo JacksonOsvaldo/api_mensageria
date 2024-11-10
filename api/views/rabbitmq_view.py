@@ -143,7 +143,7 @@ class RabbitMqViewSet(viewsets.ViewSet):
         operation_description="Lists all exchanges in RabbitMQ",
     )
     @action(detail=False, methods=["get"])
-    def list_exchange(self, request):
+    def list_exchanges(self, request):
         """
         Lists all the exchanges in RabbitMQ.
 
