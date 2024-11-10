@@ -5,11 +5,7 @@ on: [pull_request, push]
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.11, 3.12]
-      max-parallel: 4
-
+    
     steps:
       # Checkout do código
       - name: Checkout code
@@ -19,14 +15,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Set up Docker Compose
-        run: docker-compose -f docker-compose.yml up -d
+      - name: Run docker-compose
+        uses: hoverkraft-tech/compose-action@v2.0.1
+        with:
+          compose-file: "docker-compose.yml"
 
       # Rodar os testes
       - name: Run tests
         run: |
           docker exec django_api_mensageria test tests
-
-      # Parar e remover os containers após os testes
-      - name: Stop and remove containers
-        run: docker-compose down
