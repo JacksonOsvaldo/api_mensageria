@@ -29,7 +29,6 @@ class RabbitmqService:
         :return: The created channel for communication with RabbitMQ.
         :rtype: pika.BlockingChannel
         """
-        print(self.__host)
         connection_parameters = pika.ConnectionParameters(
             host=self.__host,
             port=self.__port,
