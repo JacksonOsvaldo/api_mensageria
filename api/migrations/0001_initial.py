@@ -8,37 +8,73 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Channel',
+            name="Channel",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=20, unique=True)),
-                ('description', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=20, unique=True)),
+                ("description", models.CharField(max_length=50)),
             ],
         ),
         migrations.CreateModel(
-            name='Status',
+            name="Status",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=20, unique=True)),
-                ('description', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=20, unique=True)),
+                ("description", models.CharField(max_length=50)),
             ],
         ),
         migrations.CreateModel(
-            name='CommunicationSchedule',
+            name="CommunicationSchedule",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('recipient', models.CharField(max_length=255)),
-                ('message', models.TextField()),
-                ('scheduled_datetime', models.DateTimeField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('channel', models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='api.channel')),
-                ('status', models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='api.status')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("recipient", models.CharField(max_length=255)),
+                ("message", models.TextField()),
+                ("scheduled_datetime", models.DateTimeField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "channel",
+                    models.ForeignKey(
+                        default=1,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="api.channel",
+                    ),
+                ),
+                (
+                    "status",
+                    models.ForeignKey(
+                        default=1,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="api.status",
+                    ),
+                ),
             ],
         ),
     ]

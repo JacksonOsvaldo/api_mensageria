@@ -4,7 +4,7 @@ from django.contrib import admin
 from core import settings
 
 urlpatterns = [
-    path('admin/', admin.site.urls),  # URL para o painel de administração do Django
+    path("admin/", admin.site.urls),
     path("", include("api.urls")),
     re_path(r"^static/(?P<path>.*)$", serve, {"document_root": settings.STATIC_ROOT}),
 ]
