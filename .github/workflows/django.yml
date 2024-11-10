@@ -3,65 +3,30 @@ name: Django CI
 on: [pull_request, push]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.11, 3.12]
       max-parallel: 4
 
-    services:
-      postgres:
-        image: postgres:12
-        env:
-          POSTGRES_DB: mydb
-          POSTGRES_USER: userdb
-          POSTGRES_PASSWORD: password
-        ports:
-          - 5432:5432
-        options: --health-cmd="pg_isready -U userdb" --health-timeout=30s --health-start-period=5s --health-retries=5
-
-      rabbitmq:
-        image: rabbitmq:3-management
-        ports:
-          - 5672:5672
-          - 15672:15672
-        env:
-          RABBITMQ_DEFAULT_USER: guest
-          RABBITMQ_DEFAULT_PASS: guest
-        # options: --health-cmd="curl --silent --fail tcp://rabbitmq:15672/api/healthchecks/node | grep -q '"'"'ok'"'"'" --health-timeout=30s --health-start-period=5s --health-retries=5
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      # Checkout do código
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
+      # Configuração do Docker e Docker Compose
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Set up Docker Compose
+        run: docker-compose -f docker-compose.yml up -d
 
-    - name: Run Tests
-      env:
-        SECRET_KEY: 69tgugtg%^fgJO&*&
-        DB_NAME: mydb
-        DB_USER: userdb
-        DB_PASSWORD: password
-        POSTGRES_HOST: localhost
-        POSTGRES_PORT: 5432
-        RABBITMQ_HOST: rabbitmq
-        RABBITMQ_PORT: 5672
-        DJANGO_ALLOWED_HOSTS: localhost 127.0.0.1 [::1]
-        DEBUG_MODE: False
-        TIME_ZONE: America/Sao_Paulo
-        CACHE_KEY_PREFIX: Halo
-      run: |
-        # Esperar os serviços iniciarem
-        sleep 10
-        python manage.py makemigrations
-        python manage.py migrate
-        python manage.py test tests
+      # Rodar os testes
+      - name: Run tests
+        run: |
+          docker exec django_api_mensageria test tests
+
+      # Parar e remover os containers após os testes
+      - name: Stop and remove containers
+        run: docker-compose down
